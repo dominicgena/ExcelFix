@@ -78,7 +78,7 @@ class StatusFileEventHandler(FileSystemEventHandler):
             self.debounce_timer = threading.Timer(self.debounce_interval, self.save_excel_file)
             self.debounce_timer.start()
 
-def monitor_status_file(excel_file_path, status_file_path, lock_file_path, debug_mode, debounce_interval):
+def autosave(excel_file_path, status_file_path, lock_file_path, debug_mode, debounce_interval):
     if not os.path.isfile(status_file_path):
         print(f"Error: {status_file_path} is not a file")
         return
@@ -97,3 +97,21 @@ def monitor_status_file(excel_file_path, status_file_path, lock_file_path, debug
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
+
+def debug_log(message, debug_mode):
+    """Prints message only if debug_mode is True."""
+    if debug_mode:
+        print(message)
+
+
+def excel_time_to_string(excel_time):
+    hours = int(excel_time * 24)
+    minutes = round((excel_time * 24 * 60) % 60)  # Use round() instead of int()
+    period = "AM" if hours < 12 else "PM"
+    hours = hours % 12  # Convert to 12-hour format
+    hours = 12 if hours == 0 else hours  # Adjust for 12 AM / 12 PM case
+    return f"{hours}:{minutes:02d} {period}"
+
+def cls():
+    for i in range(100):
+        print("\n")
