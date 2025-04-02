@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+        code {
+            font-family: "Courier New", Courier, monospace;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background: #f4f4f4;
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Program Documentation</h1>
+        <h2>Overview</h2>
+        <p>This program is designed to automate the process of saving an Excel workbook (<code>Guitar-lessons.xlsm</code>) based on changes detected in a status file (<code>statusbar-state.txt</code>). The program uses Python libraries such as <code>watchdog</code> for monitoring file changes, <code>pywin32</code> for interacting with Excel, and <code>xlwings</code> for manipulating Excel files. The program also includes functionality for highlighting specific rows in the Excel sheet based on the current and next lessons.</p>
+
+        <h2>Directory Structure</h2>
+        <pre><code>project_root/
+│
+├── config/
+│   ├── __init__.py
+│   ├── functions.py
+│   └── main.py
+│
+├── src/
+│   ├── helper_functions/
+│   │   ├── __init__.py
+│   │   ├── functions.py
+│   │   ├── highlight_cells.py
+│   │   ├── highlight_next_and_current.py
+│   │   ├── next_and_current.py
+│   │   └── sheet_to_array.py
+│   └── main.py
+│
+├── test/
+│   └── mirror_statusbar.py
+│
+├── triggers/
+│   ├── autosave_trigger.txt
+│   └── statusbar-state.txt
+│
+└── requirements.txt
+</code></pre>
+
+        <h2>Configuration Files</h2>
+        <h3><code>config/main.py</code></h3>
+        <p>Defines various directory paths and configuration settings used throughout the program.</p>
+        <ul>
+            <li><code>ROOT_DIR</code>: Root directory of the project.</li>
+            <li><code>EXCEL_FILE_DIR</code>: Path to the Excel file (<code>Guitar-lessons.xlsm</code>).</li>
+            <li><code>LOGS_ROOT_DIR</code>: Root directory for logs.</li>
+            <li><code>SAVE_LOGS_DIR</code>: Directory for save logs.</li>
+            <li><code>TRIGGERS_DIR</code>: Directory for trigger files.</li>
+            <li><code>SAVE_LOCK_DIR</code>: Path to the save lock file.</li>
+            <li><code>SAVE_TRIGGER_DIR</code>: Path to the autosave trigger file.</li>
+            <li><code>STATUS_FILE_DIR</code>: Path to the status file.</li>
+            <li><code>debug_mode</code>: Boolean flag for enabling debug mode.</li>
+            <li><code>debounce_interval</code>: Interval for debouncing file change events.</li>
+        </ul>
+
+        <h2>Helper Functions</h2>
+        <h3><code>config/functions.py</code></h3>
+        <p>Contains utility functions for file operations.</p>
+        <ul>
+            <li><code>create_file(prefix, root, ext)</code>: Creates a new file with a timestamped name in the specified directory.</li>
+        </ul>
+
+        <h3><code>src/helper_functions/functions.py</code></h3>
+        <p>Contains various helper functions and classes.</p>
+        <ul>
+            <li><code>StatusFileEventHandler</code>: A <code>FileSystemEventHandler</code> subclass that handles changes to the status file and triggers the save operation for the Excel workbook.</li>
+            <li><code>autosave(excel_file_path, status_file_path, lock_file_path, debug_mode, debounce_interval)</code>: Monitors the status file for changes and triggers the save operation.</li>
+            <li><code>debug_log(message, debug_mode)</code>: Logs messages if debug mode is enabled.</li>
+            <li><code>excel_time_to_string(excel_time)</code>: Converts Excel time format to a human-readable string.</li>
+            <li><code>cls()</code>: Clears the console output.</li>
+        </ul>
+
+        <h3><code>src/helper_functions/highlight_cells.py</code></h3>
+        <p>Contains functions for highlighting specific rows in the Excel sheet.</p>
+        <ul>
+            <li><code>highlight_row(row_number, color)</code>: Highlights specific columns in the given row with the specified color.</li>
+        </ul>
+
+        <h3><code>src/helper_functions/highlight_next_and_current.py</code></h3>
+        <p>Contains functions for highlighting the current and next lessons in the Excel sheet.</p>
+        <ul>
+            <li><code>highlight()</code>: Continuously highlights the current and next lessons based on the current time.</li>
+        </ul>
+
+        <h3><code>src/helper_functions/next_and_current.py</code></h3>
+        <p>Contains functions for determining the current and next lessons based on the current time.</p>
+        <ul>
+            <li><code>get_current_day_time()</code>: Returns the current day and time in Excel format.</li>
+            <li><code>get_next_lesson(lessons, current_day, current_time)</code>: Returns the next lesson based on the current day and time.</li>
+            <li><code>get_current_lesson(lessons, current_day, current_time)</code>: Returns the current lesson based on the current day and time.</li>
+        </ul>
+
+        <h3><code>src/helper_functions/sheet_to_array.py</code></h3>
+        <p>Contains functions for loading the lesson schedule from the Excel sheet into a dictionary.</p>
+        <ul>
+            <li><code>load_spreadsheet_to_array(debug_mode)</code>: Loads the lesson schedule into a dictionary grouped by day.</li>
+        </ul>
+
+        <h2>Main Script</h2>
+        <h3><code>src/main.py</code></h3>
+        <p>Starts the autosave functionality by calling the <code>autosave</code> function with the appropriate parameters.</p>
+
+        <h2>Test Script</h2>
+        <h3><code>test/mirror_statusbar.py</code></h3>
+        <p>Monitors the <code>autosave_trigger.txt</code> file for changes and prints the file state.</p>
+
+        <h2>Requirements</h2>
+        <p>The program requires the following Python packages, as specified in <code>requirements.txt</code>:</p>
+        <ul>
+            <li><code>watchdog~=6.0.0</code></li>
+            <li><code>pywin32</code></li>
+            <li><code>xlwings~=0.33.9</code></li>
+            <li><code>tabulate~=0.9.0</code></li>
+        </ul>
+
+        <h2>Usage</h2>
+        <ol>
+            <li>Ensure all required packages are installed by running:
+                <pre><code>pip install -r requirements.txt</code></pre>
+            </li>
+            <li>Run the main script to start the autosave functionality:
+                <pre><code>python src/main.py</code></pre>
+            </li>
+            <li>Optionally, run the test script to monitor the <code>autosave_trigger.txt</code> file:
+                <pre><code>python test/mirror_statusbar.py</code></pre>
+            </li>
+        </ol>
+
+        <h2>Notes</h2>
+        <p>The Excel file (<code>Guitar-lessons.xlsm</code>) contains macros for data validation and sends the status bar state to the specified directory to indicate when the workbook is ready for a save. The program uses a debounce interval to prevent multiple save operations from being triggered in quick succession.</p>
+    </div>
+</body>
+</html>
