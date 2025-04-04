@@ -1,6 +1,6 @@
 import os
 
-debug_mode = False
+debug_mode = True
 # Define the root directory of the project.
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EXCEL_FILE_DIR = os.path.join(ROOT_DIR, 'Guitar-lessons.xlsm')
