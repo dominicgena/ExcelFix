@@ -50,7 +50,7 @@ def highlight():
                 s = None
             print("No current lesson is in session.")
 
-        time.sleep(5)
+        time.sleep(2.5) # wait for 5 seconds before reinitializing and rechecking the lessons
 
 highlight()
 # region reset
