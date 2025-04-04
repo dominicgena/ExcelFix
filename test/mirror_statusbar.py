@@ -1,6 +1,6 @@
 import time
 
-FILE_PATH = r"D:\Projects\Python\ExcelFix\triggers\autosave_trigger.txt"
+FILE_PATH = r"D:\Projects\Python\ExcelFix\triggers\statusbar-state.txt"
 CHECK_INTERVAL = 0.01  # 20 milliseconds
 def read_file():
     try:

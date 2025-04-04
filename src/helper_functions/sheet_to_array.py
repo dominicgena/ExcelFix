@@ -47,13 +47,12 @@ def load_spreadsheet_to_array(debug_mode):
         return {}
 
 # Load lessons once and store the result
-lessons = load_spreadsheet_to_array(debug_mode)
-
-# Assign lessons to variables without calling the function again
-sunday_lessons = lessons.get("Sunday", [])
-monday_lessons = lessons.get("Monday", [])
-tuesday_lessons = lessons.get("Tuesday", [])
-wednesday_lessons = lessons.get("Wednesday", [])
-thursday_lessons = lessons.get("Thursday", [])
-friday_lessons = lessons.get("Friday", [])
-saturday_lessons = lessons.get("Saturday", [])
+#
+# # Assign lessons to variables without calling the function again
+# sunday_lessons = lessons.get("Sunday", [])
+# monday_lessons = lessons.get("Monday", [])
+# tuesday_lessons = lessons.get("Tuesday", [])
+# wednesday_lessons = lessons.get("Wednesday", [])
+# thursday_lessons = lessons.get("Thursday", [])
+# friday_lessons = lessons.get("Friday", [])
+# saturday_lessons = lessons.get("Saturday", [])

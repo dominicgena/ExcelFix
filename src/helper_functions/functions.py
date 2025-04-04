@@ -1,3 +1,4 @@
+from config.main import STATUS_FILE_DIR
 import os
 import time
 from watchdog.observers import Observer
@@ -115,3 +116,12 @@ def excel_time_to_string(excel_time):
 def cls():
     for i in range(100):
         print("\n")
+
+def wait_for_empty_status_file():
+    while True:
+        if os.path.exists(STATUS_FILE_DIR):
+            with open(STATUS_FILE_DIR, 'r') as file:
+                content = file.read().strip()
+                if not content:
+                    break
+        time.sleep(1)
