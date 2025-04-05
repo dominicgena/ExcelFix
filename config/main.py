@@ -1,6 +1,6 @@
 import os
 
-debug_mode = True
+debug_mode = False
 # Define the root directory of the project.
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EXCEL_FILE_DIR = os.path.join(ROOT_DIR, 'Guitar-lessons.xlsm')
@@ -12,4 +12,5 @@ SAVE_LOCK_DIR = os.path.join(TRIGGERS_DIR, 'save.lock') # when the excel workboo
 SAVE_TRIGGER_DIR = os.path.join(TRIGGERS_DIR, 'autosave-trigger.txt')
 STATUS_FILE_DIR = os.path.join(TRIGGERS_DIR, 'statusbar-state.txt')
 debounce_interval = 5 # delay in seconds program should wait after an edit before saving.  Resets for every consecutive edit. Saving will only execute after this timer reches 0
+reinit_delay = 2.5 # delay in seconds before reinitializing the lessons array, to ensure the information correctly reflects that of the excel file.  NOTE - this must be less than 30 or bad things will happen!
 

@@ -29,13 +29,6 @@ class StatusFileEventHandler(FileSystemEventHandler):
 
         print(f"Initialized event handler for: {self.status_file_path}")
 
-    def log_info(self, message):
-        if self.debug_mode:
-            print(message)
-
-    def log_error(self, message):
-        print(f"Error: {message}")
-
     def is_excel_running(self):
         try:
             # Try accessing an attribute of the Excel application to check if it's still connected
@@ -43,6 +36,24 @@ class StatusFileEventHandler(FileSystemEventHandler):
             return True
         except Exception:
             return False
+
+
+    def log_error(self, message):
+        print(f"Error: {message}")
+
+
+    def log_info(self, message):
+        if self.debug_mode:
+            print(message)
+
+
+    def on_modified(self, event):
+        if event.src_path == self.status_file_path:
+            if self.debounce_timer:
+                self.debounce_timer.cancel()
+            self.debounce_timer = threading.Timer(self.debounce_interval, self.save_excel_file)
+            self.debounce_timer.start()
+
 
     def save_excel_file(self):
         pythoncom.CoInitialize()  # Ensure COM is initialized in this thread
@@ -72,12 +83,6 @@ class StatusFileEventHandler(FileSystemEventHandler):
                 self.lock_file_path.unlink()
                 self.log_info(f"Lock file removed: {self.lock_file_path}")
 
-    def on_modified(self, event):
-        if event.src_path == self.status_file_path:
-            if self.debounce_timer:
-                self.debounce_timer.cancel()
-            self.debounce_timer = threading.Timer(self.debounce_interval, self.save_excel_file)
-            self.debounce_timer.start()
 
 def autosave(excel_file_path, status_file_path, lock_file_path, debug_mode, debounce_interval):
     if not os.path.isfile(status_file_path):
@@ -99,6 +104,12 @@ def autosave(excel_file_path, status_file_path, lock_file_path, debug_mode, debo
         observer.stop()
     observer.join()
 
+
+def cls():
+    for i in range(100):
+        print("\n")
+
+
 def debug_log(message, debug_mode):
     """Prints message only if debug_mode is True."""
     if debug_mode:
@@ -113,9 +124,24 @@ def excel_time_to_string(excel_time):
     hours = 12 if hours == 0 else hours  # Adjust for 12 AM / 12 PM case
     return f"{hours}:{minutes:02d} {period}"
 
-def cls():
-    for i in range(100):
-        print("\n")
+
+def get_valid_start_seconds(reinit_delay):
+    delay_multiples = []
+    current = 0.0
+
+    # Populate the list with valid reinit_delay multiples up to 60 (not including 60)
+    while current < 60 - reinit_delay:
+        delay_multiples.append(current)
+        current += reinit_delay
+
+    # Mirror values (add the last value before mirroring to the rest), don't exceed 60
+    n = delay_multiples[-1]
+    for i in range(1, len(delay_multiples)):
+        next_val = delay_multiples[i] + n
+        if next_val < 60 - reinit_delay:
+            delay_multiples.append(next_val)
+
+    return delay_multiples
 
 def wait_for_empty_status_file():
     while True:
@@ -125,3 +151,6 @@ def wait_for_empty_status_file():
                 if not content:
                     break
         time.sleep(1)
+
+
+
